@@ -159,9 +159,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             
             if (drifted.isEmpty()) {
                 if (!repository.hasContracts()) {
-                    _toastMessage.send("No active optimization contracts found")
+                    _toastMessage.send("未找到有效的优化配置")
                 } else {
-                    _toastMessage.send("All optimized apps are up to date")
+                    _toastMessage.send("所有已优化的应用都是最新的")
                 }
             }
             
@@ -242,7 +242,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
              _uiState.value = _uiState.value.copy(
                 isBatchRunning = true, 
                 batchProgress = 0f, 
-                batchLogs = listOf("> Restoring optimizations...", "> Count: ${updates.size}"),
+                batchLogs = listOf("> 正在恢复优化…", "> Count: ${updates.size}"),
                 showUpdatesSheet = false
             )
             
@@ -265,7 +265,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
             
-            _uiState.value = _uiState.value.copy(isBatchRunning = false, batchProgress = 1f, batchCurrentApp = "DONE", batchLogs = _uiState.value.batchLogs + "> RESTORE COMPLETE.")
+            _uiState.value = _uiState.value.copy(isBatchRunning = false, batchProgress = 1f, batchCurrentApp = "DONE", batchLogs = _uiState.value.batchLogs + "> 恢复完成。")
             needsFullRefresh = true
         }
     }
@@ -322,7 +322,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.value = _uiState.value.copy(
                 isBatchRunning = true, 
                 batchProgress = 0f, 
-                batchLogs = listOf("> Starting global optimization...", "> Mode: $mode"),
+                batchLogs = listOf("> 正在启动全局优化…", "> Mode: $mode"),
                 batchCurrentIndex = 0
             )
             val allPackages = ShellHelper.getAllPackages()
@@ -340,7 +340,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                     mode
                 }
                 
-                val logSuffix = if (targetMode != mode) " [Manual Override]" else ""
+                val logSuffix = if (targetMode != mode) " [手动覆盖]" else ""
                 
                 val currentLogs = _uiState.value.batchLogs.takeLast(50)
                 _uiState.value = _uiState.value.copy(
@@ -376,7 +376,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.value = _uiState.value.copy(globalSizeKb = _uiState.value.globalSizeKb + (sizeAfter - sizeBefore))
             }
             needsFullRefresh = true
-            _uiState.value = _uiState.value.copy(isBatchRunning = false, batchProgress = 1f, batchCurrentApp = "DONE", batchLogs = _uiState.value.batchLogs + "> COMPLETED.")
+            _uiState.value = _uiState.value.copy(isBatchRunning = false, batchProgress = 1f, batchCurrentApp = "DONE", batchLogs = _uiState.value.batchLogs + "> 已完成。")
         }
     }
 

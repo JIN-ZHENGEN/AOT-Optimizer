@@ -106,7 +106,7 @@ fun RootGuard() {
     LaunchedEffect(Unit) { rootStatus = ShellHelper.isRootGranted() }
 
     when (rootStatus) {
-        null -> LoadingScreen("Verifying System Access...")
+        null -> LoadingScreen("正在验证系统权限…")
         true -> {
             if (currentScreen == "dashboard") {
                 DashboardScreen(onNavigateToBatch = { currentScreen = "batch" })
@@ -115,8 +115,8 @@ fun RootGuard() {
             }
         }
         false -> ErrorScreen(
-            title = "ROOT ACCESS DENIED",
-            message = "This system utility requires superuser privileges.\n\nPlease grant Root access and restart the app."
+            title = "未获得 ROOT 权限",
+            message = "本工具需要超级用户权限。\n\n请在 Root 管理器中授权后重启应用。"
         )
     }
 }
@@ -293,7 +293,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                             onValueChange = { viewModel.onSearchQueryChanged(it) },
 
-                            placeholder = { Text("Search package...", color = Color.Gray) },
+                            placeholder = { Text("搜索应用…", color = Color.Gray) },
 
                             colors = TextFieldDefaults.colors(
 
@@ -343,9 +343,9 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                                             Column(modifier = Modifier.weight(1f)) {
 
-                                                Text("AOT OPTIMIZER", color = NeonBlue, fontWeight = FontWeight.Black, fontSize = 20.sp, letterSpacing = 2.sp)
+                                                Text("AOT 优化器", color = NeonBlue, fontWeight = FontWeight.Black, fontSize = 20.sp, letterSpacing = 2.sp)
 
-                                                Text("SYSTEM CORE // ART MANAGER", color = Color.Gray, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
+                                                Text("系统核心 // ART 管理器", color = Color.Gray, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
 
                                             }
 
@@ -369,7 +369,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                                                 ) {
 
-                                                    Text("FULL AOT", color = NeonCyan, fontSize = 12.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
+                                                    Text("完全 AOT", color = NeonCyan, fontSize = 12.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
 
                                                 }
 
@@ -399,7 +399,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                                                 
 
-                                                                                    Icon(Icons.Default.Sort, contentDescription = "Sort", tint = NeonCyan)
+                                                                                    Icon(Icons.Default.Sort, contentDescription = "排序", tint = NeonCyan)
 
                                                 
 
@@ -459,11 +459,11 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                                                 
 
-                                                                                                if (uiState.isDexOptDisabled) "Enable Auto-AOT" else "Disable Auto-AOT", 
+                                                                                                if (uiState.isDexOptDisabled) "开启自动 AOT" else "关闭自动 AOT", 
 
                                                 
 
-                                                                                                color = if (uiState.isDexOptDisabled) NeonGreen else NeonRed, // Green=Safe(Disabled), Red=Danger(Enabled)? Or vice versa. Let's use Red for Action "Disable" and Green for "Enable"
+                                                                                                color = if (uiState.isDexOptDisabled) NeonGreen else NeonRed, // Green=Safe(Disabled), Red=Danger(Enabled)? Or vice versa. Let's use Red for Action "关闭" and Green for "开启"
 
                                                 
 
@@ -527,7 +527,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                                                 
 
-                                                                                                                                                                text = { Text("Check Updates", color = Color.White) },
+                                                                                                                                                                text = { Text("检查更新", color = Color.White) },
 
                                                 
 
@@ -599,7 +599,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                                                 
 
-                                                                                                                                                                text = { Text("Saved Profiles", color = Color.White) },
+                                                                                                                                                                text = { Text("已保存的配置", color = Color.White) },
 
                                                 
 
@@ -669,7 +669,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                                                                                                                                 Text(
 
-                                                                                                                                    "Show All Apps", 
+                                                                                                                                    "显示全部应用", 
 
                                                                                                                                     color = Color.White,
 
@@ -699,7 +699,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                                                         
 
-                                                                                                text = { Text("Search", color = Color.White) },
+                                                                                                text = { Text("搜索", color = Color.White) },
 
                                                         
 
@@ -741,9 +741,9 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
                     // Let's show TOTAL stats, but maybe dim them if searching.
 
-                    StatCard("USER APPS", uiState.apps.size.toString(), NeonBlue, Modifier.weight(1f))
+                    StatCard("用户应用", uiState.apps.size.toString(), NeonBlue, Modifier.weight(1f))
 
-                    StatCard("OPTIMIZED", uiState.apps.count { it.status.contains("speed") || it.status.contains("everything") }.toString(), NeonGreen, Modifier.weight(1f))
+                    StatCard("已优化", uiState.apps.count { it.status.contains("speed") || it.status.contains("everything") }.toString(), NeonGreen, Modifier.weight(1f))
 
                 }
 
@@ -755,7 +755,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
 
         if (uiState.isLoading && uiState.apps.isEmpty()) {
 
-            LoadingScreen("Scanning Packages...")
+            LoadingScreen("正在扫描应用…")
 
         } else {
 
@@ -805,7 +805,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
             onOptimize = { mode ->
                 scope.launch {
                     isProcessing = true
-                    logLines = listOf("> Target: ${currentApp.packageName}", "> Mode: $mode", "> Force: Enabled")
+                    logLines = listOf("> 目标：${currentApp.packageName}", "> 模式：$mode", "> 强制执行：已启用")
                     val res = ShellHelper.compilePackage(currentApp.packageName, mode, force = true)
                     
                     val updatedLogs = logLines.toMutableList()
@@ -835,7 +835,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
             },
             onReset = {
                 scope.launch {
-                    isProcessing = true; logLines = listOf("> Resetting...")
+                    isProcessing = true; logLines = listOf("> 正在重置…")
                     val res = ShellHelper.resetPackage(currentApp.packageName)
                     val updatedLogs = logLines.toMutableList()
                     res.out.forEach { updatedLogs.add(it) }
@@ -858,7 +858,7 @@ fun DashboardScreen(onNavigateToBatch: () -> Unit) {
                 Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator(color = NeonCyan)
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Verifying Contracts...", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("正在校验配置…", color = Color.White, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("${(uiState.checkUpdatesProgress * 100).toInt()}%", color = NeonCyan, fontFamily = FontFamily.Monospace)
                 }
@@ -913,7 +913,7 @@ fun BatchOptimizeScreen(onBack: () -> Unit) {
             containerColor = DeepBlack,
             topBar = {
                 TopAppBar(
-                    title = { Text("BATCH SYSTEM OPTIMIZE", fontSize = 16.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace) },
+                    title = { Text("批量系统优化", fontSize = 16.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace) },
                     navigationIcon = { IconButton(onClick = onBack, enabled = !uiState.isBatchRunning) { Icon(Icons.Default.ArrowBack, null) } },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = DeepBlack, titleContentColor = NeonCyan, navigationIconContentColor = Color.White)
                 )
@@ -921,20 +921,20 @@ fun BatchOptimizeScreen(onBack: () -> Unit) {
         ) { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues).fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 if (!uiState.isBatchRunning && uiState.batchProgress == 0f) {
-                    Text("SELECT GLOBAL STRATEGY", color = Color.Gray, fontSize = 12.sp)
+                    Text("选择全局策略", color = Color.Gray, fontSize = 12.sp)
                     Spacer(modifier = Modifier.height(16.dp))
-                    OptionButton("SPEED PROFILE", "Recommended. Uses usage profiles.", NeonBlue) { viewModel.startBatchOptimize("speed-profile") }
-                    OptionButton("SPEED (FULL)", "Full AOT. Faster, but larger disk usage.", NeonGreen) { viewModel.startBatchOptimize("speed") }
-                    OptionButton("EVERYTHING", "Max performance. Heaviest.", NeonPurple) { viewModel.startBatchOptimize("everything") }
-                    OptionButton("RESET ALL", "Delete all compiled code.", NeonRed) { viewModel.startBatchOptimize("reset") }
+                    OptionButton("均衡模式", "推荐。跟随实际使用习惯优化。", NeonBlue) { viewModel.startBatchOptimize("speed-profile") }
+                    OptionButton("全量编译", "完全 AOT。速度更快，占用存储更多。", NeonGreen) { viewModel.startBatchOptimize("speed") }
+                    OptionButton("极限编译", "性能最强，开销也最大。", NeonPurple) { viewModel.startBatchOptimize("everything") }
+                    OptionButton("全部重置", "删除全部已编译的代码。", NeonRed) { viewModel.startBatchOptimize("reset") }
                     Spacer(modifier = Modifier.weight(1f))
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("TOTAL SYSTEM AOT ARTIFACTS", color = Color.Gray, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
+                        Text("系统 AOT 产物总计", color = Color.Gray, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
                         if (uiState.isCalculatingGlobalSize && uiState.globalSizeKb == 0L) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp).padding(4.dp), color = NeonCyan, strokeWidth = 2.dp)
                         } else {
                             Text(formatSize(uiState.globalSizeKb), color = NeonCyan, fontSize = 24.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
-                            if (uiState.isCalculatingGlobalSize) Text("Calculating...", color = Color.Gray, fontSize = 10.sp)
+                            if (uiState.isCalculatingGlobalSize) Text("计算中…", color = Color.Gray, fontSize = 10.sp)
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -947,7 +947,7 @@ fun BatchOptimizeScreen(onBack: () -> Unit) {
                         }
                     }
                     Spacer(modifier = Modifier.height(32.dp))
-                    Text("PROCESS: ${uiState.batchCurrentIndex} / ${uiState.batchTotal}", color = NeonCyan, fontFamily = FontFamily.Monospace)
+                    Text("进度：${uiState.batchCurrentIndex} / ${uiState.batchTotal}", color = NeonCyan, fontFamily = FontFamily.Monospace)
                     Text(uiState.batchCurrentApp, color = Color.Gray, fontSize = 12.sp, maxLines = 1, textAlign = TextAlign.Center, overflow = TextOverflow.Ellipsis)
                     Spacer(modifier = Modifier.height(24.dp)); TerminalBox(logs = uiState.batchLogs)
                     Spacer(modifier = Modifier.height(32.dp))
@@ -955,9 +955,9 @@ fun BatchOptimizeScreen(onBack: () -> Unit) {
                         Button(onClick = { 
                             viewModel.stopBatchOptimize()
                             onBack()
-                        }, colors = ButtonDefaults.buttonColors(containerColor = NeonRed)) { Text("ABORT SYSTEM PROCESS", color = Color.White, fontWeight = FontWeight.Bold) }
+                        }, colors = ButtonDefaults.buttonColors(containerColor = NeonRed)) { Text("中止批处理", color = Color.White, fontWeight = FontWeight.Bold) }
                     } else if (uiState.batchProgress >= 1f) {
-                        Button(onClick = onBack, colors = ButtonDefaults.buttonColors(containerColor = NeonGreen)) { Text("RETURN TO DASHBOARD", color = Color.Black, fontWeight = FontWeight.Bold) }
+                        Button(onClick = onBack, colors = ButtonDefaults.buttonColors(containerColor = NeonGreen)) { Text("返回主页", color = Color.Black, fontWeight = FontWeight.Bold) }
                     }
                 }
             }
@@ -993,7 +993,7 @@ fun AppItemRow(app: AppItem, modifier: Modifier = Modifier, onClick: () -> Unit)
                     )
                     if (app.isNew) {
                         Spacer(modifier = Modifier.width(8.dp))
-                        Surface(color = NeonBlue, shape = RoundedCornerShape(4.dp)) { Text("NEW", fontSize = 8.sp, color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)) }
+                        Surface(color = NeonBlue, shape = RoundedCornerShape(4.dp)) { Text("新", fontSize = 8.sp, color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)) }
                     }
                 }
                 Text(
@@ -1019,11 +1019,11 @@ fun AppItemRow(app: AppItem, modifier: Modifier = Modifier, onClick: () -> Unit)
 @Composable
 fun StatusChip(status: String) {
     val (color, label) = when {
-        status.contains("everything") -> NeonPurple to "MAXIMUM"
-        status.contains("speed") -> NeonGreen to "FAST"
-        status.contains("quicken") || status.contains("verify") -> NeonOrange to "BALANCED"
+        status.contains("everything") -> NeonPurple to "极限"
+        status.contains("speed") -> NeonGreen to "快速"
+        status.contains("quicken") || status.contains("verify") -> NeonOrange to "均衡"
         status == "loading..." -> Color.Gray to "..."
-        else -> NeonRed to "SLOW"
+        else -> NeonRed to "缓慢"
     }
     Surface(color = color.copy(alpha = 0.1f), shape = RoundedCornerShape(50), border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.5f))) {
         Text(text = if (status == "loading...") "..." else status.uppercase(), color = color, fontSize = 9.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), fontWeight = FontWeight.Bold)
@@ -1053,7 +1053,7 @@ fun CompilationDialog(app: AppItem, isProcessing: Boolean, logLines: List<String
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = app.complexity.uppercase(), color = getComplexityColor(app.complexity), fontSize = 10.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
                         Text(" • ", color = Color.DarkGray)
-                        Text(text = "CODE DENSITY", color = Color.Gray, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
+                        Text(text = "代码密度", color = Color.Gray, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1069,20 +1069,20 @@ fun CompilationDialog(app: AppItem, isProcessing: Boolean, logLines: List<String
             }
             Spacer(modifier = Modifier.height(32.dp))
             if (isProcessing) {
-                Text("EXECUTING ART COMMANDS...", color = NeonBlue, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
+                Text("正在执行 ART 命令…", color = NeonBlue, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
                 Spacer(modifier = Modifier.height(8.dp)); LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = NeonBlue, trackColor = DarkSurface)
                 Spacer(modifier = Modifier.height(16.dp)); TerminalBox(logLines); Spacer(modifier = Modifier.height(24.dp))
             } else {
-                Text("SELECT OPTIMIZATION PROFILE", color = NeonBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+                Text("选择优化模式", color = NeonBlue, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
                 Spacer(modifier = Modifier.height(16.dp))
-                OptionButton("SPEED (FULL)", "Full AOT. Faster, but larger disk usage.", NeonGreen) { onOptimize("speed") }
-                OptionButton("EVERYTHING", "Force compile all code. Maximum Optimization.", NeonPurple) { onOptimize("everything") }
-                OptionButton("SPEED PROFILE", "Recommended. Balanced performance.", NeonBlue) { onOptimize("speed-profile") }
-                OptionButton("QUICKEN", "Fast install. Interpreted execution.", NeonOrange) { onOptimize("quicken") }
+                OptionButton("全量编译", "完全 AOT。速度更快，占用存储更多。", NeonGreen) { onOptimize("speed") }
+                OptionButton("极限编译", "强制编译全部代码。最大程度优化。", NeonPurple) { onOptimize("everything") }
+                OptionButton("均衡模式", "推荐。性能与占用均衡。", NeonBlue) { onOptimize("speed-profile") }
+                OptionButton("轻度优化", "安装快，但运行时依赖解释执行。", NeonOrange) { onOptimize("quicken") }
                 Spacer(modifier = Modifier.height(16.dp)); Divider(color = Color.DarkGray.copy(alpha = 0.5f))
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = onReset, colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent), border = androidx.compose.foundation.BorderStroke(1.dp, NeonRed), modifier = Modifier.fillMaxWidth()) {
-                    Text("RESET / CLEAR COMPILED ARTIFACTS", color = NeonRed, fontSize = 12.sp)
+                    Text("重置 / 清除编译产物", color = NeonRed, fontSize = 12.sp)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -1140,7 +1140,7 @@ fun BatchOptimizationSheet(newApps: List<AppItem>, onDismiss: () -> Unit, onOpti
 
     val runBatch = { 
         isRunning = true
-        logs = listOf("> Starting Batch...", "> Strategy: Speed (AOT)")
+        logs = listOf("> 正在启动批处理…", "> 策略：Speed (AOT)")
         scope.launch(Dispatchers.Main) { 
              newApps.forEachIndexed {
                  index, app ->
@@ -1149,16 +1149,16 @@ fun BatchOptimizationSheet(newApps: List<AppItem>, onDismiss: () -> Unit, onOpti
                  
                  if (res.isSuccess) {
                     viewModel.saveNewAppContract(app.packageName, "speed")
-                    logs = logs + "  [OK] Success. Contract saved."
+                    logs = logs + "  [OK] 成功，配置已保存。"
                  } else {
-                    logs = logs + "  [ERR] Failed."
+                    logs = logs + "  [ERR] 失败。"
                  }
                  
                  val status = withContext(Dispatchers.IO) { ShellHelper.getCompilationFilter(app.packageName) }
                  viewModel.updateAppDetails(app.packageName, status, "...", 0L)
                  progress = (index + 1).toFloat() / newApps.size
              }
-             logs = logs + "> BATCH COMPLETE."
+             logs = logs + "> 批处理完成。"
              delay(1000)
              onDismiss()
         }
@@ -1174,7 +1174,7 @@ fun BatchOptimizationSheet(newApps: List<AppItem>, onDismiss: () -> Unit, onOpti
 // ... (rest of content)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.NewReleases, null, tint = NeonPurple); Spacer(modifier = Modifier.width(12.dp))
-                Column { Text("SYSTEM CHANGES DETECTED", color = NeonPurple, fontWeight = FontWeight.Bold, fontSize = 16.sp); Text("${newApps.size} new apps found.", color = Color.Gray, fontSize = 12.sp) }
+                Column { Text("检测到系统变更", color = NeonPurple, fontWeight = FontWeight.Bold, fontSize = 16.sp); Text("${newApps.size} 个新应用。", color = Color.Gray, fontSize = 12.sp) }
             }
             Spacer(modifier = Modifier.height(24.dp))
             if (isRunning) {
@@ -1191,8 +1191,8 @@ fun BatchOptimizationSheet(newApps: List<AppItem>, onDismiss: () -> Unit, onOpti
                 }
                 Spacer(modifier = Modifier.height(32.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = DarkSurface), modifier = Modifier.weight(1f)) { Text("IGNORE", color = Color.Gray) }
-                    Button(onClick = { runBatch() }, colors = ButtonDefaults.buttonColors(containerColor = NeonPurple), modifier = Modifier.weight(1f)) { Text("OPTIMIZE ALL", color = Color.Black, fontWeight = FontWeight.Bold) }
+                    Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = DarkSurface), modifier = Modifier.weight(1f)) { Text("忽略", color = Color.Gray) }
+                    Button(onClick = { runBatch() }, colors = ButtonDefaults.buttonColors(containerColor = NeonPurple), modifier = Modifier.weight(1f)) { Text("全部优化", color = Color.Black, fontWeight = FontWeight.Bold) }
                 }
             }
         }
@@ -1213,8 +1213,8 @@ fun UpdatesSheet(updates: List<OptimizationContract>, onDismiss: () -> Unit, onR
                 Icon(Icons.Filled.NewReleases, null, tint = NeonOrange)
                 Spacer(modifier = Modifier.width(12.dp))
                 Column { 
-                    Text("OPTIMIZATION DRIFT DETECTED", color = NeonOrange, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text("${updates.size} apps updated or reset by system.", color = Color.Gray, fontSize = 12.sp)
+                    Text("检测到优化状态漂移", color = NeonOrange, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text("${updates.size} 个应用被更新或被系统重置。", color = Color.Gray, fontSize = 12.sp)
                 }
             }
             
@@ -1237,13 +1237,13 @@ fun UpdatesSheet(updates: List<OptimizationContract>, onDismiss: () -> Unit, onR
                     onClick = onDismiss, 
                     colors = ButtonDefaults.buttonColors(containerColor = DarkSurface), 
                     modifier = Modifier.weight(1f)
-                ) { Text("IGNORE", color = Color.Gray) }
+                ) { Text("忽略", color = Color.Gray) }
                 
                 Button(
                     onClick = onRestore, 
                     colors = ButtonDefaults.buttonColors(containerColor = NeonOrange), 
                     modifier = Modifier.weight(1f)
-                ) { Text("RESTORE ALL", color = Color.Black, fontWeight = FontWeight.Bold) }
+                ) { Text("全部恢复", color = Color.Black, fontWeight = FontWeight.Bold) }
             }
         }
     }
@@ -1287,7 +1287,7 @@ fun ProfilesSheet(profiles: List<OptimizationContract>, onDismiss: () -> Unit, o
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ) {
         Column(modifier = Modifier.padding(24.dp).fillMaxWidth().fillMaxHeight(0.85f).navigationBarsPadding()) {
-            Text("SAVED PROFILES", color = Color.White, fontWeight = FontWeight.Black, fontSize = 20.sp, letterSpacing = 1.sp)
+            Text("已保存的配置", color = Color.White, fontWeight = FontWeight.Black, fontSize = 20.sp, letterSpacing = 1.sp)
             Spacer(modifier = Modifier.height(16.dp))
             
             // Filter Chips
@@ -1295,25 +1295,25 @@ fun ProfilesSheet(profiles: List<OptimizationContract>, onDismiss: () -> Unit, o
                 FilterChip(
                     selected = filterManual,
                     onClick = { filterManual = true },
-                    label = { Text("Manual") },
+                    label = { Text("手动") },
                     colors = FilterChipDefaults.filterChipColors(selectedContainerColor = NeonCyan, selectedLabelColor = Color.Black)
                 )
                 FilterChip(
                     selected = !filterManual,
                     onClick = { filterManual = false },
-                    label = { Text("Auto") },
+                    label = { Text("自动") },
                     colors = FilterChipDefaults.filterChipColors(selectedContainerColor = NeonPurple, selectedLabelColor = Color.Black)
                 )
             }
             
             Spacer(modifier = Modifier.height(8.dp))
-            Text("${filteredProfiles.size} contracts found.", color = Color.Gray, fontSize = 12.sp)
+            Text("${filteredProfiles.size} 个配置。", color = Color.Gray, fontSize = 12.sp)
             
             Spacer(modifier = Modifier.height(16.dp))
             
             if (filteredProfiles.isEmpty()) {
                 Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text("No profiles found.", color = Color.Gray, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
+                    Text("未找到任何配置。", color = Color.Gray, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
                 }
             } else {
                 LazyColumn(modifier = Modifier.weight(1f)) {
@@ -1337,7 +1337,7 @@ fun ProfilesSheet(profiles: List<OptimizationContract>, onDismiss: () -> Unit, o
                             
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(contract.packageName, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                Text("Target: ${contract.targetMode.uppercase()}", color = getStatusColor(contract.targetMode), fontSize = 10.sp, fontFamily = FontFamily.Monospace)
+                                Text("目标：${contract.targetMode.uppercase()}", color = getStatusColor(contract.targetMode), fontSize = 10.sp, fontFamily = FontFamily.Monospace)
                             }
                             
                             IconButton(onClick = { onDelete(contract.packageName) }) {
@@ -1354,7 +1354,7 @@ fun ProfilesSheet(profiles: List<OptimizationContract>, onDismiss: () -> Unit, o
                 onClick = onDismiss, 
                 colors = ButtonDefaults.buttonColors(containerColor = DarkSurface), 
                 modifier = Modifier.fillMaxWidth()
-            ) { Text("CLOSE", color = Color.White) }
+            ) { Text("关闭", color = Color.White) }
         }
     }
 }

@@ -15,9 +15,9 @@ val NeonCyan = Color(0xFF00E5FF)
 
 // --- ENUMS ---
 enum class SortOption(val label: String) {
-    NAME("Name (A-Z)"),
-    STATUS("Optimization Status"),
-    SIZE("Artifact Size")
+    NAME("名称 (A-Z)"),
+    STATUS("优化状态"),
+    SIZE("产物大小")
 }
 
 // --- MODELS ---
