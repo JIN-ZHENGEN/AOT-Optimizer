@@ -265,7 +265,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
             
-            _uiState.value = _uiState.value.copy(isBatchRunning = false, batchProgress = 1f, batchCurrentApp = "DONE", batchLogs = _uiState.value.batchLogs + "> 恢复完成。")
+            _uiState.value = _uiState.value.copy(isBatchRunning = false, batchProgress = 1f, batchCurrentApp = "完成", batchLogs = _uiState.value.batchLogs + "> 恢复完成。")
             needsFullRefresh = true
         }
     }
@@ -376,7 +376,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.value = _uiState.value.copy(globalSizeKb = _uiState.value.globalSizeKb + (sizeAfter - sizeBefore))
             }
             needsFullRefresh = true
-            _uiState.value = _uiState.value.copy(isBatchRunning = false, batchProgress = 1f, batchCurrentApp = "DONE", batchLogs = _uiState.value.batchLogs + "> 已完成。")
+            _uiState.value = _uiState.value.copy(isBatchRunning = false, batchProgress = 1f, batchCurrentApp = "完成", batchLogs = _uiState.value.batchLogs + "> 已完成。")
         }
     }
 

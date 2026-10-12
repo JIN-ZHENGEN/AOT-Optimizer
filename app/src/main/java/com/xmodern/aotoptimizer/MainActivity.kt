@@ -1026,7 +1026,7 @@ fun StatusChip(status: String) {
         else -> NeonRed to "缓慢"
     }
     Surface(color = color.copy(alpha = 0.1f), shape = RoundedCornerShape(50), border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.5f))) {
-        Text(text = if (status == "loading...") "..." else status.uppercase(), color = color, fontSize = 9.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), fontWeight = FontWeight.Bold)
+        Text(text = if (status == "loading...") "..." else statusLabel(status), color = color, fontSize = 9.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), fontWeight = FontWeight.Bold)
     }
 }
 
@@ -1051,7 +1051,7 @@ fun CompilationDialog(app: AppItem, isProcessing: Boolean, logLines: List<String
                 Column {
                     Text(text = app.label, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Black, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = app.complexity.uppercase(), color = getComplexityColor(app.complexity), fontSize = 10.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+                        Text(text = complexityLabel(app.complexity), color = getComplexityColor(app.complexity), fontSize = 10.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
                         Text(" • ", color = Color.DarkGray)
                         Text(text = "代码密度", color = Color.Gray, fontSize = 10.sp, fontFamily = FontFamily.Monospace)
                     }
@@ -1096,6 +1096,37 @@ fun ComplexityIndicator(complexity: String) {
     Box(modifier = Modifier.offset(x = 4.dp, y = 4.dp).size(14.dp).clip(CircleShape).background(DeepBlack).padding(2.dp).clip(CircleShape).background(color))
 }
 
+/**
+ * 把内部的编译状态标识映射成中文标签。
+ *
+ * 这些标识（speed / speed-profile / everything / quicken / verify）同时是
+ * cmd 参数与 status 判断依据，改动它们会让功能失效，所以只在显示时做映射。
+ */
+fun statusLabel(status: String): String {
+    val s = status.lowercase()
+    return when {
+        s.contains("everything") -> "极限"
+        s.contains("speed-profile") -> "均衡"
+        s.contains("speed") -> "全量"
+        s.contains("quicken") -> "轻度"
+        s.contains("verify") -> "校验"
+        s.contains("no-opt") || s.isEmpty() -> "未优化"
+        s.contains("unknown") -> "未知"
+        else -> status
+    }
+}
+
+/** 把内部的代码密度标识映射成中文标签。同样只用于显示。 */
+fun complexityLabel(complexity: String): String = when (complexity.lowercase()) {
+    "lite code" -> "轻量"
+    "standard" -> "标准"
+    "heavy" -> "偏重"
+    "extreme" -> "极重"
+    "scanning..." -> "扫描中"
+    "unknown" -> "未知"
+    else -> complexity
+}
+
 fun getComplexityColor(complexity: String): Color {
     return when (complexity) { "lite code" -> NeonGreen; "standard" -> NeonBlue; "heavy" -> NeonOrange; "extreme" -> NeonRed; else -> Color.Gray }
 }
@@ -1120,7 +1151,7 @@ fun TerminalBox(logs: List<String>) {
     Surface(color = Color(0xFF111111), shape = RoundedCornerShape(8.dp), border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF333333)), modifier = Modifier.fillMaxWidth().height(200.dp) ) {
         LazyColumn(state = listState, contentPadding = PaddingValues(12.dp), modifier = Modifier.fillMaxSize()) {
             items(logs) { logLine ->
-                val color = when { logLine.startsWith(">") -> NeonBlue; logLine.contains("[ERR]") || logLine.contains("Failure") -> NeonRed; logLine.contains("Success") -> NeonGreen; else -> Color(0xFF00E676) }
+                val color = when { logLine.startsWith(">") -> NeonBlue; logLine.contains("[ERR]") || logLine.contains("Failure") || logLine.contains("失败") -> NeonRed; logLine.contains("Success") || logLine.contains("成功") -> NeonGreen; else -> Color(0xFF00E676) }
                 Text(text = logLine, color = color, fontSize = 12.sp, fontFamily = FontFamily.Monospace, modifier = Modifier.padding(vertical = 2.dp))
             }
         }
@@ -1337,7 +1368,7 @@ fun ProfilesSheet(profiles: List<OptimizationContract>, onDismiss: () -> Unit, o
                             
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(contract.packageName, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                Text("目标：${contract.targetMode.uppercase()}", color = getStatusColor(contract.targetMode), fontSize = 10.sp, fontFamily = FontFamily.Monospace)
+                                Text("目标：${statusLabel(contract.targetMode)}", color = getStatusColor(contract.targetMode), fontSize = 10.sp, fontFamily = FontFamily.Monospace)
                             }
                             
                             IconButton(onClick = { onDelete(contract.packageName) }) {
