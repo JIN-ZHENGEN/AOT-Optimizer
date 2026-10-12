@@ -28,8 +28,22 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # 不用 android-actions/setup-android@v3：它内部执行 `sdkmanager tools`，
+      # 而 `tools` 包已从 SDK 仓库移除，会直接失败（Failed to find package 'tools'）。
+      # runner 已预装完整 SDK，沿用即可，只补装本项目需要的组件。
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
+          SDKM=$(ls -d "$SDK"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | tail -1)
+          if [ -n "$SDKM" ]; then
+            yes | "$SDKM" --licenses > /dev/null 2>&1 || true
+            "$SDKM" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
+          fi
+          echo "ANDROID_HOME=$SDK"
+          echo "sdkmanager=${SDKM:-未找到}"
+          ls "$SDK/platforms" 2>/dev/null || true
 
       - name: Create debug keystore
         run: |
